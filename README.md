@@ -1,34 +1,34 @@
 arduPython
 ==========
 
-arduPython é um Fork da pyFirmata, que é uma interface Python para Arduino que usa o protocolo [Firmata](http://firmata.org). É totalmente compatível com Firmata 2.1 e possui algumas funcionalidades da versão 2.2. Ele roda em Python 3.7, 3.8, 3.9 e 3.10. Com essa biblioteca você contralará a placa Arduino utilizando a linguagem Python. 
+arduPython is a fork of [pyFirmata](https://github.com/tino/pyFirmata), which is a Python interface for Arduino that uses the [Firmata](http://firmata.org) protocol. It is fully compatible with Firmata 2.1 and has some features of version 2.2. It runs on Python 3.7, 3.8, 3.9 and 3.10. With this library you will control the Arduino board using the Python language.
 
-Na versão atual, você encontrará melhorias usando a última versão do Python (3.10) e suporte ao PulseIn (Ex.: para controlar o sensor HC-SR04) da linguagem Arduino.
+In the current version, you will find improvements using the latest Python version (3.10) and PulseIn support (eg to control the HC-SR04 sensor) of the Arduino language.
 
-Instalação
-============
+Installation
+=============
 
-A maneira preferida de instalar é com [pip](http://www.pip-installer.org/en/latest/)::
+The preferred way to install is with [pip](http://www.pip-installer.org/en/latest/)::
 
-    pip install git+https://github.com/BosonsHiggs/arduPython
+     pip install git+https://github.com/BosonsHiggs/arduPython
 
-Você também pode instalar a partir do código-fonte com ``python setup.py install``. Você precisará ter [setuptools](https://pypi.python.org/pypi/setuptools) instalado ::
+You can also install from source with ``python setup.py install``. You will need to have [setuptools](https://pypi.python.org/pypi/setuptools) installed ::
 
-    git clone https://github.com/BosonsHiggs/arduPython.git
-    cd pyFirmata
-    python setup.py install
+     git clone https://github.com/BosonsHiggs/arduPython.git
+     cd pyFirmata
+     python setup.py install
 
 
-Uso
+Use
 ====
 
-Uso básico::
+Basic usage::
 
     >>> from pyfirmata import Arduino, util
-    >>> board = Arduino('/dev/tty.usbserial-A6008rIF') ou board = Arduino() 
+    >>> board = Arduino('/dev/ttyXXXX') or just board = Arduino()
     >>> board.digital[13].write(1)
 
-Para usar portas analógicas, provavelmente é útil iniciar um encadeamento de iteradores. Caso contrário, a placa continuará enviando dados para o seu serial, até estourar:
+To use analog ports, it is probably useful to start an iterator chain. Otherwise, the board will keep sending data to your serial, until it bursts:
 
     >>> it = util.Iterator(board)
     >>> it.start()
@@ -36,7 +36,7 @@ Para usar portas analógicas, provavelmente é útil iniciar um encadeamento de 
     >>> board.analog[0].read()
     0.661440304938
 
-Se você usa um pino com mais frequência, pode valer a pena usar o método ``get_pin`` da placa. Ele permite que você especifique qual pino você precisa por uma string, composta de 'a' ou 'd' (dependendo se você precisa de um pino analógico ou digital), o número do pino e o modo ('i' para entrada, 'o 'para saída,' p 'para pwm). Todos separados por ``:``. Por exemplo. ``a:0:i`` para 0 analógico como entrada ou ``d:3:p`` para pino digital 3 como pwm. ::
+If you use a pin more often, it might be worth using the board's ``get_pin`` method. It allows you to specify which pin you need by a string, made up of 'a' or 'd' (depending on whether you need an analog or digital pin), the pin number and the mode ('i' for input, ' o 'for output, 'p' for pwm). All separated by ``:``. For example. ``a:0:i`` for analog 0 as input or ``d:3:p`` for digital pin 3 as pwm. ::
 
     >>> analog_0 = board.get_pin('a:0:i')
     >>> analog_0.read()
@@ -44,52 +44,52 @@ Se você usa um pino com mais frequência, pode valer a pena usar o método ``ge
     >>> pin3 = board.get_pin('d:3:p')
     >>> pin3.write(0.6)
 
-Layout de uma placa Arduino qualquer
-====================================
+Layout of any Arduino board
+============================
 
-Se você quiser usar uma placa com um layout diferente do Arduino padrão ou do Arduino Mega (para o qual existem as classes de atalho ``pyfirmata.Arduino`` e `` pyfirmata.ArduinoMega``), instancie a classe Board com um dicionário como o argumento `` layout``. Este é o ditado de layout para o Mega, por exemplo::
+If you want to use a board with a different layout than the standard Arduino or Arduino Mega (for which there are shortcut classes ``pyfirmata.Arduino`` and ``pyfirmata.ArduinoMega``), instantiate the Board class with a dictionary as the ``layout`` argument. This is the layout adage for Mega, for example::
 
-    >>> mega = {
-    ...         'digital' : tuple(x for x in range(54)),
-    ...         'analog' : tuple(x for x in range(16)),
-    ...         'pwm' : tuple(x for x in range(2,14)),
-    ...         'use_ports' : True,
-    ...         'disabled' : (0, 1, 14, 15) # Rx, Tx, Crystal
-    ...         }
+     >>> mega = {
+     ... 'digital' : tuple(x for x in range(54)),
+     ... 'analog' : tuple(x for x in range(16)),
+     ... 'pwm' : tuple(x for x in range(2,14)),
+     ... 'use_ports' : True,
+     ... 'disabled' : (0, 1, 14, 15) # Rx, Tx, Crystal
+     ... }
 
-Suporte ao Ping (pulseIn)
-==========================
+Ping support (pulseIn)
+=======================
 
-Se você quiser usar sensores de alcance ultrassônicos que usam um pulso para medir distâncias (como o muito barato e comum ``HC-SR04``
-- Veja [datasheet](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf),
-você precisará usar um Firmata compatível com ``pulseIn`` em sua placa.
+If you want to use ultrasonic range sensors that use a pulse to measure distance (like the very cheap and common ``HC-SR04``
+- See [datasheet](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf),
+you will need to use a ``pulseIn`` compatible Firmata on your card.
 
-Você pode baixá-lo da ramificação [``pulseIn``](https://github.com/jgautier/arduino-1/tree/pulseIn) do repositório Firmata:
+You can download it from the [``pulseIn``](https://github.com/jgautier/arduino-1/tree/pulseIn) branch of the Firmata repository:
 
-Basta conectar os pinos ``Trig`` e ``Echo`` do sensor a um pino digital em sua placa.
+Simply connect the sensor's ``Trig`` and ``Echo`` pins to a digital pin on your board.
 
-![Fonte: https://github.com/NeoPolus/pyFirmata](Examples/Figures/ping.png)
+![Source: https://github.com/NeoPolus/pyFirmata](Examples/Figures/ping.png)
 
-E então use o método ping no pino:
+And then use the ping method on the pin:
 
-    >>> echo_pin = board.get_pin('d:7:o')
-    >>> echo_pin.ping()
-    1204
+     >>> echo_pin = board.get_pin('d:7:o')
+     >>> echo_pin.ping()
+     1204
 
-Você pode usar a função ``ping_time_to_distance`` para converter
-o resultado do ping (tempo de eco) em distância:
+You can use the ``ping_time_to_distance`` function to convert
+the result of the ping (echo time) in distance:
 
-    >>> from pyfirmata.util import ping_time_to_distance
-    >>> echo_pin = board.get_pin('d:7:o')
-    >>> ping_time_to_distance(echo_pin.ping())
-    20.485458055607776
+     >>> from pyfirmata.util import ping_time_to_distance
+     >>> echo_pin = board.get_pin('d:7:o')
+     >>> ping_time_to_distance(echo_pin.ping())
+     20.4854580555607776
 
-NOTA
+NOTE
 ====
 
-Os códigos só funcionarão se você baixar e carregar o código [``pulseIn``](https://github.com/jgautier/arduino-1/tree/pulseIn) na placa Arduino! Tem que ser exatamente o código citado!
+The codes will only work if you download and load the [``pulseIn``](https://github.com/jgautier/arduino-1/tree/pulseIn) code on the Arduino board! It has to be exactly the code quoted!
 
-Créditos
+Credits
 ========
 
 - [NeoPolus](https://github.com/NeoPolus/pyFirmata)
@@ -98,5 +98,5 @@ Créditos
 Links
 =====
 
-- [Servidor Oficial na Discord](https://discord.gg/nPejnfC3Nu)
-- **Meu usuário na Discord:** *Aril Ogai#5646*
+- [Official Discord Server](https://discord.gg/nPejnfC3Nu)
+- **My Discord User:** *Aril Ogai#5646*
